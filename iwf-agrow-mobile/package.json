@@ -1,5 +1,5 @@
 {
-  "name": "iwf-agrow-app",
+  "name": "iwf-agrow-mobile",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
