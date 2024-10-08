@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
+import { authStorage } from '../contexts/AuthContext';
 
-export const http = () => {
+export const http = (options: { ignoreLoginRedirect?: boolean } = {}) => {
   const instance = axios.create();
 
   instance.interceptors.request.use(
@@ -17,19 +18,34 @@ export const http = () => {
     (error) => Promise.reject(error)
   );
 
-  instance.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (error.response.status === 401) {
-        return (window.location.href = '/login');
+  const token = authStorage.get()?.token;
+  if (token) {
+    instance.interceptors.request.use(
+      (config) => {
+        config.headers['Authorization'] = `Bearer ${token}`;
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+  }
+
+  if (!options.ignoreLoginRedirect) {
+    instance.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response.status === 401) {
+          authStorage.clear();
+          return (window.location.href = '/login');
+        }
+        return Promise.reject(error);
       }
-      return Promise.reject(error);
-    }
-  );
+    );
+  }
 
   return instance;
 };
 
 export const mapHttpError = (error: AxiosError) => {
+  console.log(error);
   return (error.response?.data as any).message || 'Algo errado...';
 };

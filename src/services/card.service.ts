@@ -1,4 +1,4 @@
-import { API_URLS } from '../constants/api-urls';
+import { API_URLS } from '../http/api-urls';
 import { http } from '../http/http';
 import { CardInputModel } from '../models/input-models/card.input-model';
 import { CardViewModel } from '../models/view-models/card.view-model';

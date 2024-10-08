@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { cache } from 'react';
 import { createCardServerService } from '../../../services/server/card.server-service';
 import Content from './components/Content/Content';
-import { API_URLS } from '../../../constants/api-urls';
+import { API_URLS } from '../../../http/api-urls';
 
 interface CardPageProps {
   params: { cardSlug: string };

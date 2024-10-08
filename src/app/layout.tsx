@@ -5,13 +5,15 @@ import { ReactNode, Suspense } from 'react';
 import '../styles/globals.scss';
 import { COLORS } from '../util/colors';
 import { locale } from '../util/locale';
+import Providers from './components/Providers/Providers';
 import Loading from './loading';
 
 const meta = {
-  title: 'Cartão Aniversário – Crie um Cartão de Aniversário Personalizado',
+  siteName: 'Agrow',
+  title: 'Agrow – Plataforma de Monitoramento Agrícola em Tempo Real',
   description:
-    'Crie cartões de Aniversário personalizados online e compartilhe com quem você ama.',
-  image: '/images/logo-profile.png'
+    'Monitore suas lavouras em tempo real com a Agrow. Receba alertas personalizados sobre condições de campo como umidade e temperatura, ajudando a otimizar suas operações agrícolas.',
+  image: '/images/logo-thumbnail.png'
 };
 
 export const metadata: Metadata = {
@@ -25,7 +27,7 @@ export const metadata: Metadata = {
     description: meta.description,
     images: meta.image,
     type: 'website',
-    siteName: `Cartão Aniversário`
+    siteName: meta.siteName
   },
   twitter: {
     title: meta.title,
@@ -43,10 +45,12 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang={locale.id} className='bg-[#D7EBE0]'>
+    <html lang={locale.id} className="bg-[#D7EBE0]">
       <body>
         <main>
-          <Suspense fallback={<Loading />}>{children}</Suspense>
+          <Suspense fallback={<Loading />}>
+            <Providers>{children}</Providers>
+          </Suspense>
         </main>
         <GoogleAnalytics gaId={GTAG} />
       </body>

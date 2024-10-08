@@ -4,6 +4,7 @@ const nextConfig = {
     ignoreDuringBuilds: true
   },
   optimizeFonts: false,
+  reactStrictMode: false,
   webpack(config, { isServer }) {
     config.module.rules.push({
       test: /\.node$/,
