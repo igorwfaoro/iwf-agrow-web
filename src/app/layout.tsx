@@ -13,7 +13,7 @@ const meta = {
   title: 'Agrow – Plataforma de Monitoramento Agrícola em Tempo Real',
   description:
     'Monitore suas lavouras em tempo real com a Agrow. Receba alertas personalizados sobre condições de campo como umidade e temperatura, ajudando a otimizar suas operações agrícolas.',
-  image: '/images/logo-thumbnail.png'
+  image: '/images/logo-profile.png'
 };
 
 export const metadata: Metadata = {
