@@ -20,6 +20,9 @@ module.exports = {
       boxShadow: {
         custom1: '0px 0px 30px -5px rgba(0, 0, 0, 0.28);'
       },
+      height: {
+        'full-footer': 'calc(100vh - 60px)'
+      },
       keyframes: {
         'ltr-linear-infinite': {
           from: { 'background-position': '0 0' },

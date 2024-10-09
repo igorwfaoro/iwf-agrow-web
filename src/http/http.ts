@@ -44,8 +44,3 @@ export const http = (options: { ignoreLoginRedirect?: boolean } = {}) => {
 
   return instance;
 };
-
-export const mapHttpError = (error: AxiosError) => {
-  console.log(error);
-  return (error.response?.data as any).message || 'Algo errado...';
-};

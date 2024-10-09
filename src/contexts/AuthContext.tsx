@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { User } from '../models/api/user';
 import { UserAuth } from '../models/api/user-auth';
@@ -53,6 +54,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const loader = useLoader();
   const toast = useToast();
 
+  const router = useRouter();
+
   const authService = useAuthService();
 
   const [loggedUser, setLoggedUser] = useState<User>();
@@ -103,7 +106,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       })
       .catch((error) => {
         toast.openHttpError(error);
-        return error;
+        throw error;
       })
       .finally(() => {
         if (options.showLoading) loader.hide();
@@ -124,7 +127,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       })
       .catch((error) => {
         toast.openHttpError(error);
-        return error;
+        throw error;
       })
       .finally(() => {
         if (options.showLoading) loader.hide();
@@ -134,6 +137,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = (): void => {
     authStorage.clear();
     refreshLoggedUser();
+    router.push('/login');
   };
 
   const returnValue = useMemo(

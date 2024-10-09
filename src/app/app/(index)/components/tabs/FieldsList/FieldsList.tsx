@@ -2,6 +2,7 @@
 
 import { useFieldsContext } from "@/app/app/(index)/contexts/FieldsContext";
 import Card from "@/components/Card/Card";
+import { Weather } from "@/models/api/weather";
 
 interface FieldsListProps { }
 
@@ -11,21 +12,18 @@ export default function FieldsList({}: FieldsListProps) {
 
     return (
         <div>
-            {fields.map((field, i) => (
-                <Card key={i} className="py-2 px-4">
+            {fields.map((field, fieldIndex) => (
+                <Card key={fieldIndex} className="py-2 px-4">
                     <div className="flex justify-between">
-                        <span className="font-bold">{field.name}</span>
-                        <span style={{color: field.color}}>{field.culture}</span>
+                        <span className="font-bold text-lg">{field.name}</span>
+                        <span className="font-bold" style={{color: field.color}}>{field.culture}</span>
                     </div>
 
-                    <div className="flex flex-col text-sm">
-                        <span>Pressão Atmosférica: {field.weather.airPressureAtSeaLevel.formatted}</span>
-                        <span>Temperatura: {field.weather.airTemperature.formatted}</span>
-                        <span>Nuvens: {field.weather.cloudAreaFraction.formatted}</span>
-                        <span>Humidade: {field.weather.relativeHumidity.formatted}</span>
-                        <span>Vento: {field.weather.windFromDirection.formatted} - {field.weather.windSpeed.formatted}</span>
-                        <span>Neblina: {field.weather.fogAreaFraction.formatted}</span>
-                        <span>Chuva (1h): {field.weather.precipitationAmount1h.formatted}</span>
+                    <div className="text-sm">
+                        {Object.keys(field.weather).map((key, weatherIndex) => <div key={weatherIndex}>
+                            <span>{field.weather[key as keyof Weather].name}: </span>
+                            <span className="font-bold">{field.weather[key as keyof Weather].formatted}</span>
+                        </div>)}
                     </div>
                 </Card>
             ))}

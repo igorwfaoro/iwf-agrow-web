@@ -13,7 +13,11 @@ export const formatToShow = (url: string) => {
 };
 
 export const mapErrorResponse = (error: any) => {
-  return error?.response?.data?.message || 'Algo errado...';
+  const message = error?.response?.data?.message;
+
+  return message && typeof message === 'string'
+    ? message
+    : 'Ops! Algo errado... 🥲';
 };
 
 type ParamTypeMap = {

@@ -14,6 +14,7 @@ export type ButtonTheme =
   | 'light'
   | 'highlight'
   | 'danger'
+  | 'danger-outline'
   | 'warning';
 
 export type ButtonSize = 'normal' | 'small';
@@ -30,6 +31,7 @@ const variants: {
     light: 'bg-neutral-100 text-neutral-950',
     highlight: 'bg-highlight text-white',
     danger: 'bg-red-600 text-white',
+    'danger-outline': 'bg-transparent text-red-600 border border-red-600',
     warning: 'bg-yellow-500 text-white'
   },
   size: {
@@ -80,7 +82,7 @@ export default function Button({
   const buttonStyle: CSSProperties = { ...style, backgroundColor: color };
 
   const contentFormatted = subText ? (
-    <div className='flex flex-col'>
+    <div className="flex flex-col">
       <span>{content}</span>
       <span className="text-xs text-wrap">{subText}</span>
     </div>

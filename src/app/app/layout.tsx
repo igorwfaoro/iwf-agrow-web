@@ -15,11 +15,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
   return (
     <>
       <AppAuthRefresh />
-
-      <main className="min-h-[calc(100vh-60px)]">
-        <Navbar />
-        <div className="pt-14 px-2">{children}</div>
-      </main>
+      <Navbar />
+      <div className="pt-14 px-2">{children}</div>
     </>
   );
 }

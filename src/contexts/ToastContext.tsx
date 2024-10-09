@@ -1,9 +1,9 @@
 'use client';
 
+import { mapErrorResponse } from '@/util/helpers/http.helper';
 import { createContext, useContext } from 'react';
 import { ToastContainer, TypeOptions, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { mapHttpError } from '../http/http';
 
 const TOAST_DURATION = 4000;
 
@@ -25,7 +25,7 @@ const ToastProvider = ({ children }: ToastProviderProps) => {
       autoClose: TOAST_DURATION
     });
 
-  const openHttpError = (error: any) => open(mapHttpError(error), 'error');
+  const openHttpError = (error: any) => open(mapErrorResponse(error), 'error');
 
   return (
     <ToastContext.Provider value={{ open, openHttpError }}>
