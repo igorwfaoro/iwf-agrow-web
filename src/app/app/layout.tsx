@@ -1,6 +1,7 @@
+import AppAuthRefresh from '@/app/app/components/AppAuthRefresh/AppAuthRefresh';
+import Navbar from '@/app/app/components/Navbar/Navbar';
 import { Metadata } from 'next';
 import { ReactNode } from 'react';
-import AppAuthRefresh from './components/AppAuthRefresh/AppAuthRefresh';
 
 export const metadata: Metadata = {
   title: 'App | Agrow'
@@ -14,7 +15,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
   return (
     <>
       <AppAuthRefresh />
-      {children}
+
+      <main className="min-h-[calc(100vh-60px)]">
+        <Navbar />
+        <div className="pt-14 px-2">{children}</div>
+      </main>
     </>
   );
 }

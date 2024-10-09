@@ -1,7 +1,7 @@
 'use client';
 
+import { useAuthContext } from '@/contexts/AuthContext';
 import { useEffect } from 'react';
-import { useAuthContext } from '../../../../contexts/AuthContext';
 
 interface AppAuthRefreshProps {}
 

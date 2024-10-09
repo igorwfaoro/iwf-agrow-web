@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { User } from '../models/api/user';
 import { UserAuth } from '../models/api/user-auth';
 import { LoginDto } from '../models/dto/login.dto';
@@ -40,7 +40,7 @@ export interface AuthIProvider {
   ) => Promise<User>;
   logout: () => void;
   refresh: (options?: { showLoading?: boolean }) => Promise<User>;
-  getLoggedUser: () => User | undefined;
+  loggedUser: User | undefined;
 }
 
 interface AuthProviderProps {
@@ -55,6 +55,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const authService = useAuthService();
 
+  const [loggedUser, setLoggedUser] = useState<User>();
+
+  const refreshLoggedUser = () => {
+    const user = authStorage.get()?.user;
+    setLoggedUser(user);
+  };
+
+  useEffect(() => {
+    refreshLoggedUser();
+  }, []);
+
   const login = async (
     dto: LoginDto,
     options: { showLoading?: boolean } = {}
@@ -65,6 +76,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .authenticate(dto)
       .then((response) => {
         authStorage.set(response);
+        refreshLoggedUser();
         return response.user;
       })
       .catch((error) => {
@@ -86,6 +98,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .register(dto)
       .then((response) => {
         authStorage.set(response);
+        refreshLoggedUser();
         return response.user;
       })
       .catch((error) => {
@@ -106,6 +119,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       .refresh()
       .then((response) => {
         authStorage.set(response);
+        refreshLoggedUser();
         return response.user;
       })
       .catch((error) => {
@@ -119,15 +133,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = (): void => {
     authStorage.clear();
-  };
-
-  const getLoggedUser = (): User | undefined => {
-    return authStorage.get()?.user;
+    refreshLoggedUser();
   };
 
   const returnValue = useMemo(
-    () => ({ login, register, logout, refresh, getLoggedUser }),
-    []
+    () => ({ login, register, logout, refresh, loggedUser }),
+    [loggedUser]
   );
 
   return (

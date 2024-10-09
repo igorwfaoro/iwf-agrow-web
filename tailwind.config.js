@@ -9,9 +9,9 @@ module.exports = {
       colors: {
         black: '#000000',
         white: '#ffffff',
-        primary: '#356769',
-        secondary: '#749c7c',
-        highlight: '#F89C81'
+        primary: '#009C41',
+        secondary: '#145DAC',
+        highlight: '#e28b28'
       },
       animation: {
         'fade-out-3': 'fadeOut 3s ease-in-out',

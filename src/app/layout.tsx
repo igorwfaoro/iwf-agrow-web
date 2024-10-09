@@ -5,6 +5,7 @@ import { ReactNode, Suspense } from 'react';
 import '../styles/globals.scss';
 import { COLORS } from '../util/colors';
 import { locale } from '../util/locale';
+import Footer from './components/Footer/Footer';
 import Providers from './components/Providers/Providers';
 import Loading from './loading';
 
@@ -45,11 +46,12 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang={locale.id} className="bg-[#D7EBE0]">
+    <html lang={locale.id}>
       <body>
         <main>
           <Suspense fallback={<Loading />}>
             <Providers>{children}</Providers>
+            <Footer />
           </Suspense>
         </main>
         <GoogleAnalytics gaId={GTAG} />

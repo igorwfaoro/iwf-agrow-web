@@ -5,5 +5,12 @@ export const API_URLS = {
     authenticate: () => `${API_BASE_URL}/auth/authenticate`,
     register: () => `${API_BASE_URL}/auth/register`,
     refresh: () => `${API_BASE_URL}/auth/refresh`
+  },
+  fields: {
+    list: () => `${API_BASE_URL}/fields`,
+    get: (id: string) => `${API_BASE_URL}/fields/${id}`,
+    create: () => `${API_BASE_URL}/fields`,
+    update: (id: string) => `${API_BASE_URL}/fields/${id}`,
+    remove: (id: string) => `${API_BASE_URL}/fields/${id}`
   }
 };
