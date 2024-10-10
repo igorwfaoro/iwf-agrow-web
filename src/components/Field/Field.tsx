@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { twMerge } from 'tailwind-merge';
 
+import FieldInputAddressAutocomplete from '@/components/Field/components/FieldInputAddressAutocomplete/FieldInputAddressAutocomplete';
 import Skeleton from '../Skeleton/Skeleton';
 import FieldButtonSelector from './components/FieldButtonSelector/FieldButtonSelector';
 import FieldColor from './components/FieldColor/FieldColor';
@@ -35,7 +36,6 @@ export default function Field({ className, isLoading, children }: FieldProps) {
   );
 }
 
-Field.Label = FieldLabel;
 Field.Input = FieldInput;
 Field.Select = FieldSelect;
 Field.TextArea = FieldTextArea;
@@ -43,5 +43,8 @@ Field.SelectOption = FieldSelectOption;
 Field.ButtonSelector = FieldButtonSelector;
 Field.ImageSelector = FieldImageSelector;
 Field.Color = FieldColor;
+Field.AddressAutocomplete = FieldInputAddressAutocomplete;
+
+Field.Label = FieldLabel;
 Field.HelpText = FieldHelpText;
 Field.Error = FieldError;

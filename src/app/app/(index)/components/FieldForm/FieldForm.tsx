@@ -1,8 +1,9 @@
 'use client';
 
+import Field from '@/components/Field/Field';
 import { CoordinatePoint } from '@/models/common/coordinate-point';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -36,11 +37,30 @@ export default function FieldForm({
     resolver: zodResolver(formSchema)
   });
 
+  const [locationSearchValue, setLocationSearchValue] =
+    useState<CoordinatePoint>();
+
   useEffect(() => {
     if (coordinatePoint) {
       setValue('coordinatePoint', coordinatePoint);
     }
   }, []);
 
-  return <div></div>;
+  return (
+    <div>
+      <form>
+        <Field>
+          <Field.Label>Endereço</Field.Label>
+          <Field.AddressAutocomplete
+            onAddressSelected={(value) =>
+              setLocationSearchValue({
+                lat: value.latitude,
+                lon: value.longitude
+              })
+            }
+          />
+        </Field>
+      </form>
+    </div>
+  );
 }
