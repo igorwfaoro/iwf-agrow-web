@@ -1,5 +1,6 @@
 'use client';
 
+import GoogleApiProvider from '@/contexts/GoogleApiContext';
 import { ReactNode } from 'react';
 import AlertProvider from '../../../contexts/AlertContext';
 import AuthProvider from '../../../contexts/AuthContext';
@@ -16,9 +17,11 @@ export default function Providers({ children }: ProvidersProps) {
     <LoaderProvider>
       <ToastProvider>
         <AlertProvider>
-          <ModalProvider>
-            <AuthProvider>{children}</AuthProvider>
-          </ModalProvider>
+          <GoogleApiProvider>
+            <AuthProvider>
+              <ModalProvider>{children}</ModalProvider>
+            </AuthProvider>
+          </GoogleApiProvider>
         </AlertProvider>
       </ToastProvider>
     </LoaderProvider>

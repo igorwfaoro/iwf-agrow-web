@@ -1,6 +1,6 @@
-import { usePlacesWidget } from 'react-google-autocomplete';
-
-import { useState } from 'react';
+import { useGoogleApiContext } from '@/contexts/GoogleApiContext';
+import { Autocomplete } from '@react-google-maps/api';
+import { useRef, useState } from 'react';
 import FieldInput, { FieldInputProps } from '../FieldInput/FieldInput';
 import { Place } from './types/place';
 
@@ -21,21 +21,7 @@ export default function FieldInputAddressAutocomplete({
   focusAfterSelect,
   ...props
 }: FieldInputAddressAutocompleteProps) {
-  const { ref } = usePlacesWidget<HTMLInputElement>({
-    apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
-    libraries: ['places'],
-    language: 'pt-br',
-    options: {
-      types: 'establishment|address'
-    },
-    onPlaceSelected: (place) => {
-      !clearAfterSelect && setCurrentPlace(place);
-      onAddressSelected(mapPlaceResult(place));
-
-      if (clearAfterSelect) ref.current!.value = '';
-      if (focusAfterSelect) ref.current!.focus();
-    }
-  });
+  const { mapsIsLoaded } = useGoogleApiContext();
 
   const [currentPlace, setCurrentPlace] = useState<Place | undefined>(
     defaultPlaceValue
@@ -70,13 +56,31 @@ export default function FieldInputAddressAutocomplete({
     };
   };
 
+  const ref = useRef<any>(null);
+
+  const onPlaceSelected = () => {
+    const place = ref.current.getPlace();
+    !clearAfterSelect && setCurrentPlace(place);
+    onAddressSelected(mapPlaceResult(place));
+
+    if (clearAfterSelect) ref.current!.value = '';
+    if (focusAfterSelect) ref.current!.focus();
+  };
+
+  if (!mapsIsLoaded) return <></>;
+
   return (
-    <FieldInput
-      {...props}
-      autoComplete="off"
-      ref={ref}
-      defaultValue={currentPlace?.formattedAddress}
-      placeholder={placeholder}
-    />
+    <Autocomplete
+      onLoad={(autocomplete) => (ref.current = autocomplete)}
+      onPlaceChanged={onPlaceSelected}
+      // options={{ types: ['address', 'establishment'] }}
+    >
+      <FieldInput
+        {...props}
+        autoComplete="off"
+        defaultValue={currentPlace?.formattedAddress}
+        placeholder={placeholder}
+      />
+    </Autocomplete>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, ReactNode, useContext, useState } from 'react';
 import { v4 as uuidV4 } from 'uuid';
 
 import CustomModal from '../components/Modal/Modal';
@@ -38,7 +38,7 @@ export interface IModalProvider {
 }
 
 interface ModalProviderProps {
-  children: JSX.Element;
+  children: ReactNode;
 }
 
 const ModalContext = createContext<IModalProvider | undefined>(undefined);

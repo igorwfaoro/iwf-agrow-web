@@ -1,8 +1,10 @@
 'use client';
 
 import Field from '@/components/Field/Field';
+import { useGoogleApiContext } from '@/contexts/GoogleApiContext';
 import { CoordinatePoint } from '@/models/common/coordinate-point';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { GoogleMap, Marker } from '@react-google-maps/api';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -21,30 +23,48 @@ type FormSchema = z.infer<typeof formSchema>;
 
 interface FieldFormProps {
   isModal?: boolean;
-  coordinatePoint?: CoordinatePoint;
+  initialCoordinatePoint?: CoordinatePoint;
 }
 
 export default function FieldForm({
   isModal,
-  coordinatePoint
+  initialCoordinatePoint
 }: FieldFormProps) {
   const {
     register: formRegister,
     handleSubmit,
     formState: { errors },
+    watch,
     setValue
   } = useForm<FormSchema>({
     resolver: zodResolver(formSchema)
   });
 
+  const { mapsIsLoaded } = useGoogleApiContext();
+
+  const coordinatePointValue = watch('coordinatePoint');
+
   const [locationSearchValue, setLocationSearchValue] =
-    useState<CoordinatePoint>();
+    useState<CoordinatePoint>({
+      lat: -21.9222,
+      lon: -54.9846
+    });
+
+  const handleMapClick = (e: google.maps.MapMouseEvent) => {
+    if (e.latLng) {
+      const lat = e.latLng.lat();
+      const lon = e.latLng.lng();
+
+      setLocationSearchValue({ lat, lon });
+      setValue('coordinatePoint', { lat, lon });
+    }
+  };
 
   useEffect(() => {
-    if (coordinatePoint) {
-      setValue('coordinatePoint', coordinatePoint);
+    if (initialCoordinatePoint) {
+      setValue('coordinatePoint', initialCoordinatePoint);
     }
-  }, []);
+  }, [initialCoordinatePoint]);
 
   return (
     <div>
@@ -60,6 +80,28 @@ export default function FieldForm({
             }
           />
         </Field>
+
+        {mapsIsLoaded && (
+          <GoogleMap
+            mapContainerStyle={{ width: '100%', height: '400px' }}
+            center={{
+              lat: locationSearchValue.lat,
+              lng: locationSearchValue.lon
+            }}
+            zoom={13}
+            mapTypeId={google.maps.MapTypeId.SATELLITE}
+            onClick={handleMapClick}
+          >
+            {coordinatePointValue && (
+              <Marker
+                position={{
+                  lat: coordinatePointValue.lat,
+                  lng: coordinatePointValue.lon
+                }}
+              />
+            )}
+          </GoogleMap>
+        )}
       </form>
     </div>
   );
