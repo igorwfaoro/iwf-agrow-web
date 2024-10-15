@@ -16,7 +16,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     <>
       <AppAuthRefresh />
       <Navbar />
-      <div className="pt-14 px-2">{children}</div>
+      <div className="pt-14 flex flex-col h-[calc(100vh-64px)]">{children}</div>
     </>
   );
 }

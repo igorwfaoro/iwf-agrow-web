@@ -51,7 +51,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <main>
           <Suspense fallback={<Loading />}>
             <Providers>
-              <div className="min-h-[calc(100vh-60px)]">{children}</div>
+              <div>{children}</div>
             </Providers>
             <Footer />
           </Suspense>

@@ -11,7 +11,7 @@ export default function FieldsList({}: FieldsListProps) {
   const { fields, openFieldForm } = useFieldsContext();
 
   return (
-    <div>
+    <div className='px-2'>
       <Button type="button" onClick={() => openFieldForm()}>
         Novo Campo
       </Button>

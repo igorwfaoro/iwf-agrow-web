@@ -20,9 +20,9 @@ export default function AppPage({}: AppPageProps) {
   ];
 
   return (
-    <div>
+    <div className="h-full">
       <FieldsProvider>
-        <Tabs tabs={tabs} />
+        <Tabs tabs={tabs} className="h-full" contentClassName="p-0 h-full" />
       </FieldsProvider>
     </div>
   );
