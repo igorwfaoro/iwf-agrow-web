@@ -6,6 +6,8 @@ import CustomGoogleMap from '@/components/CustomGoogleMap/CustomGoogleMap';
 import { useGoogleApiContext } from '@/contexts/GoogleApiContext';
 import { Field } from '@/models/api/field';
 import { Weather } from '@/models/api/weather';
+import { appDayjs } from '@/util/date';
+import { locale } from '@/util/locale';
 import { DEFAULT_COORDINATE_POINT } from '@/util/maps';
 import { GoogleMap, InfoWindow, Marker } from '@react-google-maps/api';
 import { useRef, useState } from 'react';
@@ -61,7 +63,7 @@ export default function FieldsMap({}: FieldsMapProps) {
 
   return (
     <div className="h-full">
-      {mapsIsLoaded && (
+      {mapsIsLoaded && !!fields.length && (
         <CustomGoogleMap
           mapContainerClassName="w-full h-full"
           center={{
@@ -70,8 +72,9 @@ export default function FieldsMap({}: FieldsMapProps) {
           }}
           onLoad={onLoad}
           customRef={mapRef}
+          coordinatesToDefineBounds={fields.map((f) => f.coordinatePoint)}
         >
-          {fields?.map((field) => (
+          {fields.map((field) => (
             <Marker
               position={{
                 lat: field.coordinatePoint.lat,
@@ -104,7 +107,7 @@ export default function FieldsMap({}: FieldsMapProps) {
               }}
               onCloseClick={() => setSelectedField(null)}
             >
-              <div className="space-y-2">
+              <div className="space-y-2 p-2">
                 <h3 className="font-bold">
                   {`${selectedField.name} (${selectedField.culture})`}
                 </h3>
@@ -124,6 +127,13 @@ export default function FieldsMap({}: FieldsMapProps) {
                         </span>
                       </div>
                     )
+                  )}
+                </div>
+
+                <div className="italic text-sm">
+                  Última atualização:{' '}
+                  {appDayjs(selectedField.lastWeatherUpdate).format(
+                    locale.dateTimeFormat
                   )}
                 </div>
 

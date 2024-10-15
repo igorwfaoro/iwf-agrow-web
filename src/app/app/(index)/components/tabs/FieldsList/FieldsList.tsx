@@ -4,6 +4,8 @@ import { useFieldsContext } from '@/app/app/(index)/contexts/FieldsContext';
 import Button from '@/components/Button/Button';
 import Card from '@/components/Card/Card';
 import { Weather } from '@/models/api/weather';
+import { appDayjs } from '@/util/date';
+import { locale } from '@/util/locale';
 
 interface FieldsListProps {}
 
@@ -45,6 +47,11 @@ export default function FieldsList({}: FieldsListProps) {
                 </span>
               </div>
             ))}
+          </div>
+
+          <div className="italic text-sm">
+            Última atualização:{' '}
+            {appDayjs(field.lastWeatherUpdate).format(locale.dateTimeFormat)}
           </div>
         </Card>
       ))}

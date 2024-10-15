@@ -8,5 +8,6 @@ export interface Field {
   color: string;
   coordinatePoint: CoordinatePoint;
   weather: Weather;
+  lastWeatherUpdate: string;
   createdAt: string;
 }
