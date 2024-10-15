@@ -1,6 +1,7 @@
 'use client';
 
 import Button from '@/components/Button/Button';
+import CustomGoogleMap from '@/components/CustomGoogleMap/CustomGoogleMap';
 import { default as FormField } from '@/components/Field/Field';
 import { useGoogleApiContext } from '@/contexts/GoogleApiContext';
 import { useLoader } from '@/contexts/LoaderContext';
@@ -31,13 +32,18 @@ type FormSchema = z.infer<typeof formSchema>;
 export interface FieldFormProps
   extends ModalRefPropType<FieldFormProps, FieldFormResult> {
   field?: Field;
+  initialLocation?: CoordinatePoint;
 }
 
 export interface FieldFormResult {
   field?: Field;
 }
 
-export default function FieldForm({ field, modalRef }: FieldFormProps) {
+export default function FieldForm({
+  field,
+  initialLocation,
+  modalRef
+}: FieldFormProps) {
   const {
     register: formRegister,
     handleSubmit,
@@ -58,7 +64,7 @@ export default function FieldForm({ field, modalRef }: FieldFormProps) {
   const colorValue = watch('color');
 
   const [locationSearchValue, setLocationSearchValue] =
-    useState<CoordinatePoint>(DEFAULT_COORDINATE_POINT);
+    useState<CoordinatePoint>(initialLocation || DEFAULT_COORDINATE_POINT);
 
   useEffect(() => {
     if (field) {
@@ -110,14 +116,12 @@ export default function FieldForm({ field, modalRef }: FieldFormProps) {
           />
 
           {mapsIsLoaded && (
-            <GoogleMap
+            <CustomGoogleMap
               mapContainerStyle={{ width: '100%', height: '400px' }}
               center={{
                 lat: locationSearchValue.lat,
                 lng: locationSearchValue.lon
               }}
-              zoom={13}
-              mapTypeId={google.maps.MapTypeId.SATELLITE}
               onClick={handleMapClick}
             >
               {coordinatePointValue && (
@@ -126,9 +130,17 @@ export default function FieldForm({ field, modalRef }: FieldFormProps) {
                     lat: coordinatePointValue.lat,
                     lng: coordinatePointValue.lon
                   }}
+                  icon={{
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 6,
+                    fillColor: '#922626',
+                    fillOpacity: 1,
+                    strokeColor: '#ffffff',
+                    strokeWeight: 1
+                  }}
                 />
               )}
-            </GoogleMap>
+            </CustomGoogleMap>
           )}
         </FormField>
 

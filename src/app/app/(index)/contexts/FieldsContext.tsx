@@ -8,12 +8,16 @@ import { useLoader } from '@/contexts/LoaderContext';
 import { useModal } from '@/contexts/ModalContext';
 import { useToast } from '@/contexts/ToastContext';
 import { Field } from '@/models/api/field';
+import { CoordinatePoint } from '@/models/common/coordinate-point';
 import { useFieldService } from '@/services/field.service';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 export interface IFieldsProvider {
   fields: Field[];
-  openFieldForm: (field?: Field) => void;
+  openFieldForm: (props?: {
+    field?: Field;
+    initialLocation?: CoordinatePoint;
+  }) => void;
 }
 
 interface FieldsProviderProps {
@@ -47,12 +51,18 @@ const FieldsProvider = ({ children }: FieldsProviderProps) => {
       .finally(loader.hide);
   };
 
-  const openFieldForm = (field?: Field) => {
+  const openFieldForm = ({
+    field,
+    initialLocation
+  }: {
+    field?: Field;
+    initialLocation?: CoordinatePoint;
+  } = {}) => {
     modal.open<FieldFormProps, FieldFormResult>({
       component: FieldForm,
       title: field ? 'Editar Campo' : 'Novo Campo',
       width: '95%',
-      props: { field },
+      props: { field, initialLocation },
       onClose: (result) => {
         if (result?.field) {
           fetchFields();

@@ -11,16 +11,23 @@ export default function FieldsList({}: FieldsListProps) {
   const { fields, openFieldForm } = useFieldsContext();
 
   return (
-    <div className='px-2'>
-      <Button type="button" onClick={() => openFieldForm()}>
-        Novo Campo
-      </Button>
+    <div className="px-2 py-2 space-y-2">
+      <div className="flex justify-end">
+        <Button
+          type="button"
+          size="small"
+          theme="primary-outline"
+          onClick={() => openFieldForm()}
+        >
+          Novo Campo
+        </Button>
+      </div>
 
       {fields.map((field, fieldIndex) => (
         <Card
           key={fieldIndex}
-          className="py-2 px-4"
-          onClick={() => openFieldForm(field)}
+          className="py-2 px-4 cursor-pointer"
+          onClick={() => openFieldForm({ field })}
         >
           <div className="flex justify-between">
             <span className="font-bold text-lg">{field.name}</span>
