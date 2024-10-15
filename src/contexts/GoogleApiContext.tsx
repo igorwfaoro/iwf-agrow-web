@@ -23,26 +23,10 @@ const GoogleApiProvider = (props: GoogleApiProviderProps) => {
     language: locale.id
   });
 
-  // const [mapsIsLoaded, setMapsIsLoaded] = useState(false);
-
-  // const mapsIsLoaded = true;
-
   const returnValue = useMemo(() => ({ mapsIsLoaded }), [mapsIsLoaded]);
 
   return (
     <GoogleApiContext.Provider value={returnValue}>
-      {/* {mapsIsLoaded ? (
-         <LoadScriptNext
-           googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}
-           libraries={['places']}
-           onLoad={() => console.log('eeeee')}
-           language={locale.id}
-         >
-           {props.children}
-         </LoadScriptNext>
-       ) : (
-         props.children
-       )} */}
       {mapsIsLoaded && props.children}
     </GoogleApiContext.Provider>
   );

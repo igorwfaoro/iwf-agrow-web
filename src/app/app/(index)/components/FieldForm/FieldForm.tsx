@@ -1,8 +1,15 @@
 'use client';
 
-import Field from '@/components/Field/Field';
+import Button from '@/components/Button/Button';
+import { default as FormField } from '@/components/Field/Field';
 import { useGoogleApiContext } from '@/contexts/GoogleApiContext';
+import { useLoader } from '@/contexts/LoaderContext';
+import { ModalRefPropType } from '@/contexts/ModalContext';
+import { useToast } from '@/contexts/ToastContext';
+import { Field } from '@/models/api/field';
 import { CoordinatePoint } from '@/models/common/coordinate-point';
+import { useFieldService } from '@/services/field.service';
+import { DEFAULT_COORDINATE_POINT } from '@/util/maps';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { useEffect, useState } from 'react';
@@ -14,22 +21,23 @@ const formSchema = z.object({
   culture: z.string().min(1, 'A Cultura é obrigatória'),
   color: z.string().min(1, 'A Cor é obrigatória'),
   coordinatePoint: z.object({
-    lat: z.number().min(1, 'Latitude é obrigatória'),
-    lon: z.number().min(1, 'Longitude é obrigatória')
+    lat: z.number(),
+    lon: z.number()
   })
 });
 
 type FormSchema = z.infer<typeof formSchema>;
 
-interface FieldFormProps {
-  isModal?: boolean;
-  initialCoordinatePoint?: CoordinatePoint;
+export interface FieldFormProps
+  extends ModalRefPropType<FieldFormProps, FieldFormResult> {
+  field?: Field;
 }
 
-export default function FieldForm({
-  isModal,
-  initialCoordinatePoint
-}: FieldFormProps) {
+export interface FieldFormResult {
+  field?: Field;
+}
+
+export default function FieldForm({ field, modalRef }: FieldFormProps) {
   const {
     register: formRegister,
     handleSubmit,
@@ -40,15 +48,27 @@ export default function FieldForm({
     resolver: zodResolver(formSchema)
   });
 
+  const loader = useLoader();
+  const toast = useToast();
+
   const { mapsIsLoaded } = useGoogleApiContext();
+  const fieldService = useFieldService();
 
   const coordinatePointValue = watch('coordinatePoint');
+  const colorValue = watch('color');
 
   const [locationSearchValue, setLocationSearchValue] =
-    useState<CoordinatePoint>({
-      lat: -21.9222,
-      lon: -54.9846
-    });
+    useState<CoordinatePoint>(DEFAULT_COORDINATE_POINT);
+
+  useEffect(() => {
+    if (field) {
+      setValue('name', field.name);
+      setValue('culture', field.culture);
+      setValue('color', field.color);
+      setValue('coordinatePoint', field.coordinatePoint);
+      setLocationSearchValue(field.coordinatePoint);
+    }
+  }, [field]);
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     if (e.latLng) {
@@ -60,18 +80,27 @@ export default function FieldForm({
     }
   };
 
-  useEffect(() => {
-    if (initialCoordinatePoint) {
-      setValue('coordinatePoint', initialCoordinatePoint);
-    }
-  }, [initialCoordinatePoint]);
+  const save = (data: FormSchema) => {
+    const promise = field
+      ? fieldService.update(field.id, data)
+      : fieldService.create(data);
+
+    loader.show();
+
+    promise
+      .then((response) => {
+        modalRef.close({ field: response });
+      })
+      .catch(toast.openHttpError)
+      .finally(loader.hide);
+  };
 
   return (
     <div>
-      <form>
-        <Field>
-          <Field.Label>Endereço</Field.Label>
-          <Field.AddressAutocomplete
+      <form onSubmit={handleSubmit(save, console.error)}>
+        <FormField>
+          <FormField.Label>Endereço</FormField.Label>
+          <FormField.AddressAutocomplete
             onAddressSelected={(value) =>
               setLocationSearchValue({
                 lat: value.latitude,
@@ -79,29 +108,52 @@ export default function FieldForm({
               })
             }
           />
-        </Field>
 
-        {mapsIsLoaded && (
-          <GoogleMap
-            mapContainerStyle={{ width: '100%', height: '400px' }}
-            center={{
-              lat: locationSearchValue.lat,
-              lng: locationSearchValue.lon
-            }}
-            zoom={13}
-            mapTypeId={google.maps.MapTypeId.SATELLITE}
-            onClick={handleMapClick}
-          >
-            {coordinatePointValue && (
-              <Marker
-                position={{
-                  lat: coordinatePointValue.lat,
-                  lng: coordinatePointValue.lon
-                }}
-              />
-            )}
-          </GoogleMap>
-        )}
+          {mapsIsLoaded && (
+            <GoogleMap
+              mapContainerStyle={{ width: '100%', height: '400px' }}
+              center={{
+                lat: locationSearchValue.lat,
+                lng: locationSearchValue.lon
+              }}
+              zoom={13}
+              mapTypeId={google.maps.MapTypeId.SATELLITE}
+              onClick={handleMapClick}
+            >
+              {coordinatePointValue && (
+                <Marker
+                  position={{
+                    lat: coordinatePointValue.lat,
+                    lng: coordinatePointValue.lon
+                  }}
+                />
+              )}
+            </GoogleMap>
+          )}
+        </FormField>
+
+        <FormField>
+          <FormField.Label>Nome</FormField.Label>
+          <FormField.Input {...formRegister('name')} />
+          <FormField.Error>{errors.name?.message}</FormField.Error>
+        </FormField>
+
+        <FormField>
+          <FormField.Label>Cultura</FormField.Label>
+          <FormField.Input {...formRegister('culture')} />
+          <FormField.Error>{errors.culture?.message}</FormField.Error>
+        </FormField>
+
+        <FormField>
+          <FormField.Label>Cor</FormField.Label>
+          <FormField.Color
+            value={colorValue}
+            onChange={(value) => setValue('color', value)}
+          ></FormField.Color>
+          <FormField.Error>{errors.culture?.message}</FormField.Error>
+        </FormField>
+
+        <Button className="sm:w-full">Salvar</Button>
       </form>
     </div>
   );

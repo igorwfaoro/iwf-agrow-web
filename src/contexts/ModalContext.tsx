@@ -5,8 +5,8 @@ import { v4 as uuidV4 } from 'uuid';
 
 import CustomModal from '../components/Modal/Modal';
 
-export type ModalRefPropType = {
-  modalRef: ModalRef;
+export type ModalRefPropType<T = any, R = any> = {
+  modalRef: ModalRef<T, R>;
 };
 
 export interface ModalProvider {
@@ -14,27 +14,27 @@ export interface ModalProvider {
   props?: { [key: string]: any };
 }
 
-export interface ModalOptions {
-  component: React.FC<any>;
-  props?: any;
+export interface ModalOptions<T = any, R = any> {
+  component: React.FC<T>;
+  props?: Omit<T, 'modalRef'>;
   title?: string;
-  onClose?: (result?: any) => void;
+  onClose?: (result?: R) => void;
   width?: string;
   providers?: ModalProvider[];
 }
 
-export interface ModalRef {
+export interface ModalRef<T = any, R = any> {
   id: string;
-  component: React.FC<any>;
-  props?: any;
+  component: React.FC<T>;
+  props?: T;
   title?: string;
-  close: (result?: any) => void;
+  close: (result?: R) => void;
   width?: string;
   providers?: ModalProvider[];
 }
 
 export interface IModalProvider {
-  open: (options: ModalOptions) => ModalRef;
+  open: <T = any, R = any>(options: ModalOptions<T, R>) => ModalRef<T, R>;
 }
 
 interface ModalProviderProps {

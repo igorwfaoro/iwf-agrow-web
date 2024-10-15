@@ -1,19 +1,27 @@
 'use client';
 
-import FieldForm from '@/app/app/(index)/components/FieldForm/FieldForm';
 import { useFieldsContext } from '@/app/app/(index)/contexts/FieldsContext';
+import Button from '@/components/Button/Button';
 import Card from '@/components/Card/Card';
 import { Weather } from '@/models/api/weather';
 
 interface FieldsListProps {}
 
 export default function FieldsList({}: FieldsListProps) {
-  const { fields } = useFieldsContext();
+  const { fields, openFieldForm } = useFieldsContext();
 
   return (
     <div>
+      <Button type="button" onClick={() => openFieldForm()}>
+        Novo Campo
+      </Button>
+
       {fields.map((field, fieldIndex) => (
-        <Card key={fieldIndex} className="py-2 px-4">
+        <Card
+          key={fieldIndex}
+          className="py-2 px-4"
+          onClick={() => openFieldForm(field)}
+        >
           <div className="flex justify-between">
             <span className="font-bold text-lg">{field.name}</span>
             <span className="font-bold" style={{ color: field.color }}>
@@ -33,9 +41,6 @@ export default function FieldsList({}: FieldsListProps) {
           </div>
         </Card>
       ))}
-
-      {/* TODO: just for testing */}
-      <FieldForm />
     </div>
   );
 }
